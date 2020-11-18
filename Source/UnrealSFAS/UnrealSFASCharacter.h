@@ -18,6 +18,27 @@ class AUnrealSFASCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	/** FrontFacing camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* FrontCamera;
+
+	/** Neck and Arm rotation around axis */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	float NeckArmRotationAroundAxis;
+
+	/** Front camera turn rate */
+	UPROPERTY()
+	float FrontCameraTurnRate;
+
+	/** Front camera maximum rotation around an axis */
+	UPROPERTY()
+		float FrontCameraMaxTurnAroundAxis;
+
+	/** Front camera minimum rotation around an axis */
+	UPROPERTY()
+		float FrontCameraMinTurnAroundAxis;
+
 public:
 	AUnrealSFASCharacter();
 
@@ -39,6 +60,9 @@ protected:
 
 	/** Called for side to side input */
 	void MoveRight(float Value);
+
+	/** Called for front camera turn input */
+	void TurnFrontCamera(float Value);
 
 	/** 
 	 * Called via input to turn at a given rate. 

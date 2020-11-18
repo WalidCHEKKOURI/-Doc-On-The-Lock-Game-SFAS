@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Engine/World.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -20,6 +21,14 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+
+	// set front camera turn rate and bone rotation around axis
+	FrontCameraTurnRate = 60.f;
+	NeckArmRotationAroundAxis = 0.f;
+
+	//set default minimum and maximum rotation around axis
+	FrontCameraMaxTurnAroundAxis = 42.0f;
+	FrontCameraMinTurnAroundAxis = -20.0f;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -43,6 +52,11 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Create a front facing camera
+	FrontCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FrontCamera"));
+	FrontCamera->SetupAttachment(GetMesh(), FName("FrontCameraSocket")); // Attach the camera to the FrontCameraSocket
+	FrontCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -59,6 +73,8 @@ void AUnrealSFASCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUnrealSFASCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AUnrealSFASCharacter::MoveRight);
+
+	PlayerInputComponent->BindAxis("TurnFrontCamera", this, &AUnrealSFASCharacter::TurnFrontCamera);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -130,5 +146,15 @@ void AUnrealSFASCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void AUnrealSFASCharacter::TurnFrontCamera(float Value)
+{
+	if ((Controller != NULL) && (Value != 0.0f))
+	{
+		float newBoneRotationAroundAxis = NeckArmRotationAroundAxis + GetWorld()->GetDeltaSeconds() * FrontCameraTurnRate * Value;
+		NeckArmRotationAroundAxis = FMath::Clamp(newBoneRotationAroundAxis, FrontCameraMinTurnAroundAxis, FrontCameraMaxTurnAroundAxis);
+
 	}
 }
