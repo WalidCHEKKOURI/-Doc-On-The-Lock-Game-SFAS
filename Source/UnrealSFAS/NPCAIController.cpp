@@ -59,14 +59,14 @@ void ANPCAIController::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulu
 	{
 
 		GetBlackboardComp()->SetValueAsBool(bbKeys::can_see_player, Stimulus.WasSuccessfullySensed());
-		UE_LOG(LogTemp, Warning, TEXT("WW_Sensed"));
+		
 	}
-	UE_LOG(LogTemp, Warning, TEXT("WW_Target"));
+	
 }
 
 void ANPCAIController::SetupPerceptionSystem()
 {
-	UE_LOG(LogTemp, Warning, TEXT("WW_Setup"));
+	
 
 	/* create and initialize sight configuration object */
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
