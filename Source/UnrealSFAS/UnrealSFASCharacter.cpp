@@ -9,6 +9,8 @@
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
@@ -59,6 +61,8 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+	//Setup the strimulus component
+	SetupStimulus();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -157,4 +161,14 @@ void AUnrealSFASCharacter::TurnFrontCamera(float Value)
 		NeckArmRotationAroundAxis = FMath::Clamp(newBoneRotationAroundAxis, FrontCameraMinTurnAroundAxis, FrontCameraMaxTurnAroundAxis);
 
 	}
+}
+
+
+void AUnrealSFASCharacter::SetupStimulus()
+{
+
+	Stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+	Stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
+	Stimulus->RegisterWithPerceptionSystem();
+
 }

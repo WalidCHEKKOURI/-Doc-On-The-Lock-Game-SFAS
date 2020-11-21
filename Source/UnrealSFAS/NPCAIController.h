@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "NPCAIController.generated.h"
 
 /**
@@ -30,4 +31,10 @@ private:
 
 	class UBlackboardComponent* Blackboard;
 
+	class UAISenseConfig_Sight* SightConfig;
+
+	UFUNCTION()
+	void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
+
+	void SetupPerceptionSystem();
 };
