@@ -36,7 +36,7 @@ EBTNodeResult::Type UMyBTTaskIncrementPathIndex::ExecuteTask(UBehaviorTreeCompon
 
 		// get and set the black board index key
 		int index = NPCAIController->GetBlackboardComp()->GetValueAsInt(bbKeys::patrol_path_index);
-		if (bBidirectional)
+		if (bBidirectional) //change direction every time we reach the end of the path
 		{
 			if (index >= MaxIndex && DirectionEnum == EDirectionType::Forward)
 			{

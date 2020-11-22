@@ -2,6 +2,7 @@
 
 
 #include "UnrealSFASMaze.h"
+#include "NavigationSystem.h"
 
 // Sets default values
 AUnrealSFASMaze::AUnrealSFASMaze()
@@ -81,5 +82,9 @@ void AUnrealSFASMaze::BeginPlay()
 		}
 
 	}
+
+	// Rebuild navigation mesh
+	UNavigationSystemV1* NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+	NavSystem->Build();
 }
 
