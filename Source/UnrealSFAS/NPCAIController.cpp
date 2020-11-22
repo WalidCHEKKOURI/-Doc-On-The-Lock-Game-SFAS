@@ -73,11 +73,11 @@ void ANPCAIController::SetupPerceptionSystem()
 	if (SightConfig)
 	{
 		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
-		SightConfig->SightRadius = 500.0f;
-		SightConfig->LoseSightRadius = SightConfig->SightRadius + 50.0f;
+		SightConfig->SightRadius = 300.0f;
+		SightConfig->LoseSightRadius = SightConfig->SightRadius + 25.0f;
 		SightConfig->PeripheralVisionAngleDegrees = 90.0f;
 		SightConfig->SetMaxAge(5.0f);
-		SightConfig->AutoSuccessRangeFromLastSeenLocation = 900.0f;
+		SightConfig->AutoSuccessRangeFromLastSeenLocation = 520.0f;
 		SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 		SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 		SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
