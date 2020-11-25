@@ -38,9 +38,25 @@ void AUnrealSFASNPC::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 
 // Called to return the patrol path of current NPC
-AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath()
+AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath() const
 {
 	return PatrolPath;
 }
+
+// Called to return the head scale of the NPC
+float AUnrealSFASNPC::GetHeadSize() const
+{
+	return HeadSize;
+}
+
+// Called to set the head scale of the NPC
+void AUnrealSFASNPC::SetHeadSize(float NewHeadSize)
+{
+
+	HeadSize = HeadSize+NewHeadSize;
+}
+
+
+
 
 

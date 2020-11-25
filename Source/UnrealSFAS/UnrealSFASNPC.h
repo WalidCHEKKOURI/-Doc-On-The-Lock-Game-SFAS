@@ -24,7 +24,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// get the patrol path of this NPC
-	AUnrealSFASPatrolPath* GetPatrolPath();
+	AUnrealSFASPatrolPath* GetPatrolPath() const;
+
+	/// TODO Create a separate Service for headSize
+	/// TODO Put Min & Max limits to bone scalar
+
+	// get the head size of this NPC
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	float GetHeadSize() const;
+
+	// set the head size of this NPC
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void SetHeadSize(float NewHeadSize);
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,5 +47,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	AUnrealSFASPatrolPath* PatrolPath;
 
+	/* Character's head scale*/
+	UPROPERTY()
+	float HeadSize = 1;
 
+	
 };
