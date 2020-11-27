@@ -25,7 +25,4 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	float Speed = 300.0f;
 
-	// NPC's head size
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	float HeadSize = 1.0f;
 };

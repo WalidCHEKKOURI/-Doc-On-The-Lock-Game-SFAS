@@ -19,7 +19,6 @@ void UBTServiceChangeSpeed::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, 
 	auto const AIController = OwnerComp.GetAIOwner();
 	AUnrealSFASNPC* const NPC = Cast<AUnrealSFASNPC>(AIController->GetPawn());
 	NPC->GetCharacterMovement()->MaxWalkSpeed = Speed;// change NPC Speed
-	NPC->SetHeadSize(HeadSize);
 }
 
 FString UBTServiceChangeSpeed::GetStaticServiceDescription() const

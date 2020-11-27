@@ -29,13 +29,14 @@ public:
 	/// TODO Create a separate Service for headSize
 	/// TODO Put Min & Max limits to bone scalar
 
-	// get the head size of this NPC
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	float GetHeadSize() const;
+
 
 	// set the head size of this NPC
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetHeadSize(float NewHeadSize);
+	void ScaleHeadSize(float NewHeadSize);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		float GetHeadSize() const;
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,12 +45,21 @@ protected:
 
 private:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	AUnrealSFASPatrolPath* PatrolPath;
 
 	/* Character's head scale*/
 	UPROPERTY()
 	float HeadSize = 1;
+
+	/* Character's Max head scale*/
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite ,Category = "AI", meta = (AllowPrivateAccess = "true"))
+	float MaxHeadSize = 4.f;
+
+	/* Character's Min head scale*/
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	float MinHeadSize = 1.0f;
+
 
 	
 };

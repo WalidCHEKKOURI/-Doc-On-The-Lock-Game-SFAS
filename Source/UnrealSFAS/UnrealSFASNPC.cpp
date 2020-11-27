@@ -3,7 +3,7 @@
 
 #include "UnrealSFASNPC.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AUnrealSFASNPC::AUnrealSFASNPC()
@@ -43,19 +43,30 @@ AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath() const
 	return PatrolPath;
 }
 
-// Called to return the head scale of the NPC
-float AUnrealSFASNPC::GetHeadSize() const
-{
-	return HeadSize;
-}
+
 
 // Called to set the head scale of the NPC
-void AUnrealSFASNPC::SetHeadSize(float NewHeadSize)
+void AUnrealSFASNPC::ScaleHeadSize(float NewHeadSize)
 {
+	
 
-	HeadSize = HeadSize+NewHeadSize;
+	HeadSize = FMath::Clamp((HeadSize+NewHeadSize), 1.0f, MaxHeadSize);
+
+	if(HeadSize >=MaxHeadSize)
+		UE_LOG(LogTemp, Warning, TEXT("Head Imploded!"));
+
+
+
+
 }
 
+// Called to get the head scale of the NPC
+float AUnrealSFASNPC::GetHeadSize() const
+{
+
+	return HeadSize;
+
+}
 
 
 
