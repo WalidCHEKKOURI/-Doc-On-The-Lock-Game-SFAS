@@ -20,15 +20,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// get the patrol path of this NPC
 	AUnrealSFASPatrolPath* GetPatrolPath() const;
-
-	/// TODO Create a separate Service for headSize
-	/// TODO Put Min & Max limits to bone scalar
-
 
 
 	// set the head size of this NPC
@@ -37,6 +31,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		float GetHeadSize() const;
+
+
+	// Called to unpossess our NPC pawn
+	virtual void UnPossessed() override;
 
 protected:
 	// Called when the game starts or when spawned

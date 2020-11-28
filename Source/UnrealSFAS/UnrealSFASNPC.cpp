@@ -30,10 +30,12 @@ void AUnrealSFASNPC::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void AUnrealSFASNPC::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+
+// Called to unpossess our NPC pawn (in death)
+void AUnrealSFASNPC::UnPossessed()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UE_LOG(LogTemp, Warning, TEXT("Head Imploded!"));
 
 }
 
@@ -44,7 +46,6 @@ AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath() const
 }
 
 
-
 // Called to set the head scale of the NPC
 void AUnrealSFASNPC::ScaleHeadSize(float NewHeadSize)
 {
@@ -52,10 +53,13 @@ void AUnrealSFASNPC::ScaleHeadSize(float NewHeadSize)
 
 	HeadSize = FMath::Clamp((HeadSize+NewHeadSize), 1.0f, MaxHeadSize);
 
-	if(HeadSize >=MaxHeadSize)
-		UE_LOG(LogTemp, Warning, TEXT("Head Imploded!"));
-
-
+	if (HeadSize >= MaxHeadSize)
+	{
+		AController* SavedController = GetController();
+		HeadSize = 0.f; // head being imploded
+		SavedController->UnPossess(); //Unpossess the pawn
+	}
+		
 
 
 }
