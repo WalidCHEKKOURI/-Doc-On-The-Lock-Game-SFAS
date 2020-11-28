@@ -98,7 +98,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	/* Returns Axis value of moving forward input */
-	UFUNCTION(BlueprintCallable, Category = "AI")
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovingForwardAxisValue() const;
 
 
@@ -118,7 +118,7 @@ private:
 	class UAnimInstance* CharacterAnimInstance;
 
 	/* Axis value of moving forward input */
-	UPROPERTY()
+	UPROPERTY( )
 	float MovingForwardAxisValue = 1;
 
 };

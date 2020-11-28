@@ -126,7 +126,7 @@ void AUnrealSFASCharacter::LookUpAtRate(float Rate)
 }
 
 /* Returns Axis value of moving forward input */
-float GetMovingForwardAxisValue() const
+float AUnrealSFASCharacter::GetMovingForwardAxisValue() const
 {
 	return MovingForwardAxisValue;
 }
