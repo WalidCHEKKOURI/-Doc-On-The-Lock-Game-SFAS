@@ -42,6 +42,8 @@ class AUnrealSFASCharacter : public ACharacter
 public:
 	AUnrealSFASCharacter();
 
+	void Kill();
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -49,6 +51,8 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+
 
 protected:
 
@@ -93,8 +97,29 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	/* Returns Axis value of moving forward input */
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	float GetMovingForwardAxisValue() const;
+
+
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;
 	void SetupStimulus();
+
+	UPROPERTY()
+	bool bDead = false;
+
+	/* Character's death animation montage*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Montages", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* DeathAnimMontage;
+
+	/* Character's AnimationInstance*/
+	UPROPERTY()
+	class UAnimInstance* CharacterAnimInstance;
+
+	/* Axis value of moving forward input */
+	UPROPERTY()
+	float MovingForwardAxisValue = 1;
+
 };
 

@@ -4,6 +4,9 @@
 #include "UnrealSFASNPC.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "Animation/AnimInstance.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "UnrealSFASCharacter.h"
 
 // Sets default values
 AUnrealSFASNPC::AUnrealSFASNPC()
@@ -31,35 +34,84 @@ void AUnrealSFASNPC::Tick(float DeltaTime)
 }
 
 
-// Called to unpossess our NPC pawn (in death)
-void AUnrealSFASNPC::UnPossessed()
+// Called to kill NPC
+void AUnrealSFASNPC::KillNPC()
 {
+	
+	HeadSize = 0.f; // head being imploded
+	NPCAnimInstance = GetMesh()->GetAnimInstance();
 
-	UE_LOG(LogTemp, Warning, TEXT("Head Imploded!"));
+	if (NPCAnimInstance)
+	{
+		FTimerHandle handle;
+	
+		bDead = true;
+		if(DeathAnimMontage)
+			NPCAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
+		else
+			UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
+
+		/* get player character and the NPC's controller */
+		AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		
+		Player->Kill(); //Kill player too
+		UE_LOG(LogTemp, Warning, TEXT("Head Imploded !"));
+
+		//Delay until the end of the animationMontage
+		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+			{
+				
+				
+				GetMesh()->bPauseAnims = true; // pause the animation
+
+				AController* SavedController =GetController();
+				
+
+				SavedController->UnPossess(); //Unpossess the pawn
+
+			}, (DeathAnimMontage->GetSectionLength(0)-0.4), 0);
+
+
+
+		
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Error finding AnimInstance!"));
+	}
+
 
 }
 
-// Called to return the patrol path of current NPC
+// Called to return the patrol path of NPC
 AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath() const
 {
 	return PatrolPath;
 }
 
+// Called to return if NPC is dead
+bool AUnrealSFASNPC::GetIsDead() const
+{
+
+	return bDead;
+
+}
 
 // Called to set the head scale of the NPC
 void AUnrealSFASNPC::ScaleHeadSize(float NewHeadSize)
 {
-	
-
-	HeadSize = FMath::Clamp((HeadSize+NewHeadSize), 1.0f, MaxHeadSize);
-
-	if (HeadSize >= MaxHeadSize)
+	if (!bDead)
 	{
-		AController* SavedController = GetController();
-		HeadSize = 0.f; // head being imploded
-		SavedController->UnPossess(); //Unpossess the pawn
+		HeadSize = FMath::Clamp((HeadSize + NewHeadSize), 1.0f, MaxHeadSize);
+
+		if (HeadSize >= MaxHeadSize)
+		{
+			KillNPC();
+		}
+
 	}
-		
+	
 
 
 }

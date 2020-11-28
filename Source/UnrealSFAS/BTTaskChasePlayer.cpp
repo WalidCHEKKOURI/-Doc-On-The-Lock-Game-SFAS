@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BlackBoardKeys.h"
+#include "UnrealSFASNPC.h"
 
 
 UBTTaskChasePlayer::UBTTaskChasePlayer(FObjectInitializer const& ObjectInitializer)
@@ -20,10 +21,19 @@ EBTNodeResult::Type UBTTaskChasePlayer::ExecuteTask(UBehaviorTreeComponent& Owne
 	ANPCAIController* const NPCAIController = Cast<ANPCAIController>(OwnerComp.GetAIOwner());
 	FVector const PlayerLocation = NPCAIController->GetBlackboardComp()->GetValueAsVector(bbKeys::target_location);
 
-	// move to the player's location
-	UAIBlueprintHelperLibrary::SimpleMoveToLocation(NPCAIController, PlayerLocation);
+	AUnrealSFASNPC* const NPC = Cast<AUnrealSFASNPC>(NPCAIController->GetPawn());
+	if (!NPC->GetIsDead())
+	{
+		// move to the player's location
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(NPCAIController, PlayerLocation);
 
-	// finish with success
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
+		// finish with success
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+	}
+	
+
+	// finish with failure
+	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	return EBTNodeResult::Failed;
 }

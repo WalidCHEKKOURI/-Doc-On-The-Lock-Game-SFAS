@@ -30,11 +30,10 @@ public:
 	void ScaleHeadSize(float NewHeadSize);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-		float GetHeadSize() const;
+	float GetHeadSize() const;
 
+	bool GetIsDead() const;
 
-	// Called to unpossess our NPC pawn
-	virtual void UnPossessed() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -58,6 +57,19 @@ private:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	float MinHeadSize = 1.0f;
 
+	/* Character's death animation montage*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* DeathAnimMontage;
 
+	/* Character's AnimationInstance*/
+	UPROPERTY()
+	class UAnimInstance* NPCAnimInstance;
+
+	/*  Called to Kill NPC pawn*/
+	void KillNPC();
+
+	/* Is character dead */
+	UPROPERTY()
+	bool bDead = false;
 	
 };

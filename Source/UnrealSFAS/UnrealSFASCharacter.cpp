@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Animation/AnimInstance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
@@ -124,6 +125,13 @@ void AUnrealSFASCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+/* Returns Axis value of moving forward input */
+float GetMovingForwardAxisValue() const
+{
+	return MovingForwardAxisValue;
+}
+
+
 void AUnrealSFASCharacter::MoveForward(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))
@@ -136,6 +144,7 @@ void AUnrealSFASCharacter::MoveForward(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
 	}
+	MovingForwardAxisValue = Value;
 }
 
 void AUnrealSFASCharacter::MoveRight(float Value)
@@ -170,5 +179,35 @@ void AUnrealSFASCharacter::SetupStimulus()
 	Stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
 	Stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
 	Stimulus->RegisterWithPerceptionSystem();
+
+}
+
+void AUnrealSFASCharacter::Kill()
+{
+	bDead = true;
+	CharacterAnimInstance = GetMesh()->GetAnimInstance();
+	if(DeathAnimMontage)
+		CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
+	else
+		UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
+
+	FollowCamera->Activate(true);
+	FrontCamera->Activate(false);
+
+	FTimerHandle handle;
+	//Delay until the end of the animationMontage
+	GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+		{
+
+
+			GetMesh()->bPauseAnims = true; // pause the animation
+
+			FollowCamera->Activate(false);
+			FrontCamera->Activate(true);
+			//AController* SavedController = GetController();
+			//SavedController->UnPossess(); //Unpossess the pawn
+
+		}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
+
 
 }
