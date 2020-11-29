@@ -16,5 +16,18 @@ public class UnrealSFAS : ModuleRules
             "AIModule",
             "GameplayTasks",
             "NavigationSystem" });
-	}
+
+
+        PrivateDependencyModuleNames.AddRange(new string[] {
+            "GameplayAbilities",
+            "GameplayTags",
+            "GameplayTasks"
+        });
+
+
+
+    }
+
+ 
+
 }
