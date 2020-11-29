@@ -197,7 +197,7 @@ void AUnrealSFASCharacter::SetupStimulus()
 void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 {
 	bDead = true;
-
+	bUseControllerRotationYaw = false;
 	FollowCamera->Activate(true);
 	FrontCamera->Activate(false);
 
