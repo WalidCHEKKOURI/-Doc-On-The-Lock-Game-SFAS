@@ -12,8 +12,12 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Animation/AnimInstance.h"
-
 #include "DeathCauses.h"
+
+#include "GASAbilitySystemComponent.h"
+#include "MainCharacterAttributeSet.h"
+#include <GameplayEffectTypes.h>
+
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -65,6 +69,12 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 	//Setup the strimulus component
 	SetupStimulus();
+
+	/*Ability System Component Setup*/
+	AbilitySystemComponent = CreateDefaultSubobject<UGASAbilitySystemComponent>(TEXT("AbilitySystemComp"));
+	AbilitySystemComponent->SetIsReplicated(true);
+
+	Attributes = CreateDefaultSubobject<UMainCharacterAttributeSet>(TEXT("Attributes"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -191,6 +201,42 @@ void AUnrealSFASCharacter::SetupStimulus()
 	Stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
 	Stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
 	Stimulus->RegisterWithPerceptionSystem();
+
+}
+
+void AUnrealSFASCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	//Setup the owner and the avatar, in this case it's the character for both
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	InitializeAttributes();
+}
+
+
+UAbilitySystemComponent* AUnrealSFASCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+
+void AUnrealSFASCharacter::InitializeAttributes()
+{
+	if (AbilitySystemComponent && DefaultAttributeEffect)
+	{
+		// The context in which we applying the effect
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+
+
+		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect, 1, EffectContext);
+		if (SpecHandle.IsValid())
+		{
+			//Apply the effect to our main player character to initialize default values
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
 
 }
 

@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "DeathCauses.h"
+#include "AbilitySystemInterface.h"
+#include <GamePlayEffectTypes.h>
 #include "UnrealSFASCharacter.generated.h"
 
 
 UCLASS(config=Game)
-class AUnrealSFASCharacter : public ACharacter
+class AUnrealSFASCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -41,6 +43,14 @@ class AUnrealSFASCharacter : public ACharacter
 	UPROPERTY()
 		float FrontCameraMinTurnAroundAxis;
 
+	/** GAS component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+		class UGASAbilitySystemComponent* AbilitySystemComponent;
+
+	/** GAS AttributeSet */
+	UPROPERTY()
+		class UMainCharacterAttributeSet* Attributes;
+
 public:
 	AUnrealSFASCharacter();
 
@@ -55,7 +65,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	/* Called to return the GAS Component*/
+	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	/* Used to assign default values to the attributes*/
+	virtual void InitializeAttributes();
+
+	/* Effect that initializes our default attributes*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+		TSubclassOf<class UGameplayEffect> DefaultAttributeEffect;
+
+	//Used to initialize the ability system on the server
+	virtual void PossessedBy(AController* NewController) override; 
 
 protected:
 
