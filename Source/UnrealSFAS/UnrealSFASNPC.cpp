@@ -7,6 +7,7 @@
 #include "Animation/AnimInstance.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "UnrealSFASCharacter.h"
+#include "DeathCauses.h"
 
 // Sets default values
 AUnrealSFASNPC::AUnrealSFASNPC()
@@ -54,7 +55,7 @@ void AUnrealSFASNPC::KillNPC()
 		/* get player character and the NPC's controller */
 		AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		
-		Player->Kill(); //Kill player too
+		Player->Kill(EDeathCauses::NPCImplosion); //Kill player too
 		UE_LOG(LogTemp, Warning, TEXT("Head Imploded !"));
 
 		//Delay until the end of the animationMontage

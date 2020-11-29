@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "DeathCauses.h"
 #include "UnrealSFASCharacter.generated.h"
+
 
 UCLASS(config=Game)
 class AUnrealSFASCharacter : public ACharacter
@@ -42,8 +44,9 @@ class AUnrealSFASCharacter : public ACharacter
 public:
 	AUnrealSFASCharacter();
 
-	void Kill();
-
+	void Kill(TEnumAsByte<EDeathCauses> DeathType);
+	
+		
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -102,6 +105,7 @@ public:
 	float GetMovingForwardAxisValue() const;
 
 
+
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;
 	void SetupStimulus();
@@ -120,6 +124,7 @@ private:
 	/* Axis value of moving forward input */
 	UPROPERTY( )
 	float MovingForwardAxisValue = 1;
+
 
 };
 

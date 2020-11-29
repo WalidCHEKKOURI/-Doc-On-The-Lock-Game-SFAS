@@ -13,6 +13,7 @@
 #include "Perception/AISense_Sight.h"
 #include "Animation/AnimInstance.h"
 
+#include "DeathCauses.h"
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -134,32 +135,43 @@ float AUnrealSFASCharacter::GetMovingForwardAxisValue() const
 
 void AUnrealSFASCharacter::MoveForward(float Value)
 {
-	if ((Controller != NULL) && (Value != 0.0f))
+	if (!bDead)
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		if ((Controller != NULL) && (Value != 0.0f))
+		{
+			// find out which way is forward
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+			// get forward vector
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(Direction, Value);
+		}
+		MovingForwardAxisValue = Value;
 	}
-	MovingForwardAxisValue = Value;
+
+	
+
+
 }
 
 void AUnrealSFASCharacter::MoveRight(float Value)
 {
-	if ( (Controller != NULL) && (Value != 0.0f) )
+	if (!bDead)
 	{
-		// find out which way is right
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		if ((Controller != NULL) && (Value != 0.0f))
+		{
+			// find out which way is right
+			const FRotator Rotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+			// get right vector 
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			// add movement in that direction
+			AddMovementInput(Direction, Value);
+		}
 	}
+	
 }
 
 void AUnrealSFASCharacter::TurnFrontCamera(float Value)
@@ -182,32 +194,50 @@ void AUnrealSFASCharacter::SetupStimulus()
 
 }
 
-void AUnrealSFASCharacter::Kill()
+void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 {
 	bDead = true;
-	CharacterAnimInstance = GetMesh()->GetAnimInstance();
-	if(DeathAnimMontage)
-		CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
-	else
-		UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
 
 	FollowCamera->Activate(true);
 	FrontCamera->Activate(false);
 
-	FTimerHandle handle;
-	//Delay until the end of the animationMontage
-	GetWorld()->GetTimerManager().SetTimer(handle, [this]()
-		{
+	switch (DeathType)
+	{
+
+	case EDeathCauses::NPCImplosion: // NPC Imploded before the player
+		CharacterAnimInstance = GetMesh()->GetAnimInstance();
+		if (DeathAnimMontage)
+			CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
+		else
+			UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
+
+		FTimerHandle handle;
+		//Delay until the end of the animationMontage
+		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+			{
 
 
-			GetMesh()->bPauseAnims = true; // pause the animation
+				GetMesh()->bPauseAnims = true; // pause the animation
 
-			FollowCamera->Activate(false);
-			FrontCamera->Activate(true);
-			//AController* SavedController = GetController();
-			//SavedController->UnPossess(); //Unpossess the pawn
 
-		}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
+
+			}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
+
+
+		break;
+
+
+
+
+	}
+
+
+	
+
+
+
+
+	
 
 
 }
