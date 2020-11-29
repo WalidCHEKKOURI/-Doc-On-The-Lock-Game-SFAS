@@ -3,3 +3,9 @@
 
 #include "MainCharacterAttributeSet.h"
 
+UMainCharacterAttributeSet::UMainCharacterAttributeSet()
+{
+
+
+
+}
