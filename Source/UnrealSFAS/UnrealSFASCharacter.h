@@ -71,12 +71,24 @@ public:
 	/* Used to assign default values to the attributes*/
 	virtual void InitializeAttributes();
 
-	/* Effect that initializes our default attributes*/
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
-		TSubclassOf<class UGameplayEffect> DefaultAttributeEffect;
-
 	//Used to initialize the ability system on the server
 	virtual void PossessedBy(AController* NewController) override; 
+
+
+	/* Effect that initializes our default attributes*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> DefaultAttributeEffect;
+
+	/* Effect for battery energy during time*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> TimeBatteryEnergyEffect;
+
+	/* Effect for temperature by being near NPC*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> TemperatureEffectByAI;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	float MaxTemperature = 40.f;
 
 protected:
 
@@ -115,6 +127,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -125,7 +140,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovingForwardAxisValue() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GAS")
+	float GetTemperature() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GAS")
+	float GetBatteryEnergy() const;
+
+	void ChangeBatteryEnergy();
+
+	void ChangeTemperatureByAI();
 
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;

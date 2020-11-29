@@ -5,10 +5,11 @@
 #include "UnrealSFASNPC.h"
 #include "NPCAIController.h"
 
+
 UMyBTServiceChangeHeadSize::UMyBTServiceChangeHeadSize()
 {
 	bNotifyBecomeRelevant = true;
-	NodeName = TEXT("Change HeadSize");
+	NodeName = TEXT("Change NPC HeadSize");
 }
 
 void UMyBTServiceChangeHeadSize::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -18,6 +19,9 @@ void UMyBTServiceChangeHeadSize::OnBecomeRelevant(UBehaviorTreeComponent& OwnerC
 	auto const AIController = OwnerComp.GetAIOwner();
 	AUnrealSFASNPC* const NPC = Cast<AUnrealSFASNPC>(AIController->GetPawn());
 	NPC->ScaleHeadSize(HeadSize);
+
+
+
 }
 
 FString UMyBTServiceChangeHeadSize::GetStaticServiceDescription() const

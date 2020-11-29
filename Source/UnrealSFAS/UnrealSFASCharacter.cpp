@@ -77,6 +77,16 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 	Attributes = CreateDefaultSubobject<UMainCharacterAttributeSet>(TEXT("Attributes"));
 }
 
+// Called when the game starts or when spawned
+void AUnrealSFASCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//Batter Energy starts to drain 
+	ChangeBatteryEnergy();
+}
+
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -244,46 +254,162 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 {
 	bDead = true;
 	bUseControllerRotationYaw = false;
-	FollowCamera->Activate(true);
-	FrontCamera->Activate(false);
+	FTimerHandle handle;
 
 	switch (DeathType)
 	{
 
 	case EDeathCauses::NPCImplosion: // NPC Imploded before the player
+
+		FollowCamera->Activate(true);
+		FrontCamera->Activate(false);
+
 		CharacterAnimInstance = GetMesh()->GetAnimInstance();
 		if (DeathAnimMontage)
 			CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
 		else
 			UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
 
-		FTimerHandle handle;
+		
 		//Delay until the end of the animationMontage
 		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
 			{
-
-
 				GetMesh()->bPauseAnims = true; // pause the animation
-
-
 
 			}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
 
 
+	break;
+
+	case EDeathCauses::LowBatteryEnergy:
+		GetMesh()->bPauseAnims = true; // pause the animation
+		UE_LOG(LogTemp, Warning, TEXT("Deah by Low Battery"));
+	break;
+
+	case EDeathCauses::HighTemperature:
+		GetMesh()->bPauseAnims = true; // pause the animation
+		UE_LOG(LogTemp, Warning, TEXT("Deah by High Temperature"));
+	break;
+
+
+
+	default:
 		break;
-
-
-
-
 	}
 
 
 	
+	
 
+
+}
+
+void AUnrealSFASCharacter::ChangeBatteryEnergy()
+{
+	
+		FTimerHandle handle;
+		//Loop every 3 seconds to decreaseBatterEnergy
+		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+			{
+
+				if (!bDead)
+				{
+
+					float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
+
+
+					if (AbilitySystemComponent && TimeBatteryEnergyEffect)
+					{
+						// The context in which we applying the effect
+						FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+						EffectContext.AddSourceObject(this);
+
+
+						FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(TimeBatteryEnergyEffect, 1, EffectContext);
+						if (SpecHandle.IsValid())
+						{
+							//Apply the effect to our main player character
+							FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+						}
+					}
+
+					UE_LOG(LogTemp, Warning, TEXT("CurrentBatteryEnergy: %f"), CurrentBatteryEnergy);
+					if (CurrentBatteryEnergy <= 0)
+					{
+						Kill(EDeathCauses::LowBatteryEnergy);
+						return;
+					}
+
+				}
+				else
+					return;
+
+
+
+
+
+			}, 3, 1);
 
 
 
 	
 
+
+	
+
+}
+
+
+void AUnrealSFASCharacter::ChangeTemperatureByAI()
+{
+
+
+	if (!bDead)
+	{
+
+		float CurrentTemperature = Attributes->GetTemperature();
+
+		UE_LOG(LogTemp, Warning, TEXT("Current Temperature: %f"), CurrentTemperature);
+		if (CurrentTemperature >= (MaxTemperature)) 
+		{
+			//Kill(EDeathCauses::HighTemperature);//Killed by High Temperature
+			//return;
+		}
+
+		if (AbilitySystemComponent && TemperatureEffectByAI)
+		{
+			// The context in which we applying the effect
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+
+			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(TemperatureEffectByAI, 1, EffectContext);
+			if (SpecHandle.IsValid())
+			{
+				//Apply the effect to our main player character
+				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			}
+		}
+
+	
+
+	}
+
+}
+
+
+
+float AUnrealSFASCharacter::GetTemperature() const
+{
+
+	return Attributes->GetTemperature();
+
+}
+
+
+float AUnrealSFASCharacter::GetBatteryEnergy() const
+{
+
+	return Attributes->GetBatteryEnergy();
 
 }

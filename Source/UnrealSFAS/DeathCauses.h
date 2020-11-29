@@ -11,7 +11,7 @@ UENUM()
 enum EDeathCauses
 {
 	NPCImplosion ,
-	LowTemperature  ,
+	HighTemperature  ,
 	LowBatteryEnergy
 	
 };
