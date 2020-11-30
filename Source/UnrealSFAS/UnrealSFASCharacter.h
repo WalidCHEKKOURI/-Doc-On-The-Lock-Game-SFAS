@@ -161,6 +161,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Montages", meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* DeathAnimMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* DeathParticleEmitter;
+
 	/* Character's AnimationInstance*/
 	UPROPERTY()
 	class UAnimInstance* CharacterAnimInstance;

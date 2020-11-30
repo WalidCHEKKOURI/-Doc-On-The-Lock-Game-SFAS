@@ -17,7 +17,7 @@
 #include "GASAbilitySystemComponent.h"
 #include "MainCharacterAttributeSet.h"
 #include <GameplayEffectTypes.h>
-
+#include "Kismet/GameplayStatics.h"
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -255,6 +255,12 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 	bDead = true;
 	bUseControllerRotationYaw = false;
 	FTimerHandle handle;
+
+	//Spawn Death Emitter
+	if (DeathParticleEmitter) 
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathParticleEmitter, GetOwner()->GetTransform(), true);
+	else
+		UE_LOG(LogTemp, Error, TEXT("Death particle system is null !"));
 
 	switch (DeathType)
 	{
