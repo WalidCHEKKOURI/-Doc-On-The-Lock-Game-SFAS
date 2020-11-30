@@ -252,58 +252,66 @@ void AUnrealSFASCharacter::InitializeAttributes()
 
 void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 {
-	bDead = true;
-	bUseControllerRotationYaw = false;
-	FTimerHandle handle;
-
-	//Spawn Death Emitter
-	if (DeathParticleEmitter) 
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathParticleEmitter, GetOwner()->GetTransform(), true);
-	else
-		UE_LOG(LogTemp, Error, TEXT("Death particle system is null !"));
-
-	switch (DeathType)
+	if (!bDead)
 	{
+		bDead = true;
+		bUseControllerRotationYaw = false;
+		FTimerHandle handle;
 
-	case EDeathCauses::NPCImplosion: // NPC Imploded before the player
+		//Spawn Death Emitter
+		if (DeathParticleEmitter)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Death particle system spawned !"));
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathParticleEmitter, GetActorTransform(), true);
+		}
 
-		FollowCamera->Activate(true);
-		FrontCamera->Activate(false);
-
-		CharacterAnimInstance = GetMesh()->GetAnimInstance();
-		if (DeathAnimMontage)
-			CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
 		else
-			UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
+			UE_LOG(LogTemp, Error, TEXT("Death particle system is null !"));
 
-		
-		//Delay until the end of the animationMontage
-		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
-			{
-				GetMesh()->bPauseAnims = true; // pause the animation
+		switch (DeathType)
+		{
 
-			}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
+		case EDeathCauses::NPCImplosion: // NPC Imploded before the player
 
+			FollowCamera->Activate(true);
+			FrontCamera->Activate(false);
 
-	break;
-
-	case EDeathCauses::LowBatteryEnergy:
-		GetMesh()->bPauseAnims = true; // pause the animation
-		UE_LOG(LogTemp, Warning, TEXT("Deah by Low Battery"));
-	break;
-
-	case EDeathCauses::HighTemperature:
-		GetMesh()->bPauseAnims = true; // pause the animation
-		UE_LOG(LogTemp, Warning, TEXT("Deah by High Temperature"));
-	break;
+			CharacterAnimInstance = GetMesh()->GetAnimInstance();
+			if (DeathAnimMontage)
+				CharacterAnimInstance->Montage_Play(DeathAnimMontage, 1.f);
+			else
+				UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
 
 
+			//Delay until the end of the animationMontage
+			GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+				{
+					GetMesh()->bPauseAnims = true; // pause the animation
 
-	default:
-		break;
+				}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
+
+
+			break;
+
+		case EDeathCauses::LowBatteryEnergy:
+			GetMesh()->bPauseAnims = true; // pause the animation
+			UE_LOG(LogTemp, Warning, TEXT("Deah by Low Battery"));
+			break;
+
+		case EDeathCauses::HighTemperature:
+			GetMesh()->bPauseAnims = true; // pause the animation
+			UE_LOG(LogTemp, Warning, TEXT("Deah by High Temperature"));
+			break;
+
+
+
+		default:
+			break;
+		}
+
+
+
 	}
-
-
 	
 	
 
