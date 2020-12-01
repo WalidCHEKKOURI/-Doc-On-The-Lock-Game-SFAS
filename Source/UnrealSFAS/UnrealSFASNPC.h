@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "UnrealSFASPatrolPath.h"
+//#include "Particles/ParticleSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "UnrealSFASNPC.generated.h"
 
 
@@ -43,7 +45,7 @@ protected:
 private:
 
 	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	AUnrealSFASPatrolPath* PatrolPath;
+	AUnrealSFASPatrolPath* PatrolPath = nullptr;
 
 	/* Character's head scale*/
 	UPROPERTY()
@@ -59,11 +61,11 @@ private:
 
 	/* Character's death animation montage*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	class UAnimMontage* DeathAnimMontage;
+	class UAnimMontage* DeathAnimMontage = nullptr;
 
 	/* Character's AnimationInstance*/
 	UPROPERTY()
-	class UAnimInstance* NPCAnimInstance;
+	class UAnimInstance* NPCAnimInstance = nullptr;
 
 	/*  Called to Kill NPC pawn*/
 	void KillNPC();
@@ -72,4 +74,6 @@ private:
 	UPROPERTY()
 	bool bDead = false;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* HeadParticleEmitter = nullptr;
 };

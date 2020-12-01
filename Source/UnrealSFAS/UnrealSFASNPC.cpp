@@ -18,13 +18,16 @@ AUnrealSFASNPC::AUnrealSFASNPC()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+
+
+		
 }
 
 // Called when the game starts or when spawned
 void AUnrealSFASNPC::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -40,6 +43,7 @@ void AUnrealSFASNPC::KillNPC()
 {
 	
 	HeadSize = 0.f; // head being imploded
+	
 	NPCAnimInstance = GetMesh()->GetAnimInstance();
 
 	if (NPCAnimInstance)
