@@ -73,7 +73,8 @@ private:
 	/* Is character dead */
 	UPROPERTY()
 	bool bDead = false;
-	
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
-	UParticleSystemComponent* HeadParticleEmitter = nullptr;
+	UParticleSystem* ImplosionParticleEmitter = nullptr;
 };

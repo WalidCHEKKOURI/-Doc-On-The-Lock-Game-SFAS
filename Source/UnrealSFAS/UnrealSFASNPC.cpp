@@ -45,6 +45,11 @@ void AUnrealSFASNPC::KillNPC()
 	HeadSize = 0.f; // head being imploded
 	
 	NPCAnimInstance = GetMesh()->GetAnimInstance();
+	//FRotator(0.f), FVector(1.f),
+	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImplosionParticleEmitter, GetMesh()->GetSocketLocation("HeadVirusSocket"), FRotator(1.f), FVector(1.f), true);
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(GetMesh()->GetSocketLocation("HeadVirusSocket"));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImplosionParticleEmitter, SpawnTransform, true);
 
 	if (NPCAnimInstance)
 	{
