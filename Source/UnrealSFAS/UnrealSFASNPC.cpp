@@ -135,5 +135,10 @@ float AUnrealSFASNPC::GetHeadSize() const
 }
 
 
+void AUnrealSFASNPC::FinishDataCollection()
+{
 
+	bDataCollected = true;
+
+}
 

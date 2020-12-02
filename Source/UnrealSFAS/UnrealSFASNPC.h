@@ -36,6 +36,7 @@ public:
 
 	bool GetIsDead() const;
 
+	void FinishDataCollection();
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,6 +75,8 @@ private:
 	UPROPERTY()
 	bool bDead = false;
 
+	UPROPERTY()
+	bool bDataCollected = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
 	UParticleSystem* ImplosionParticleEmitter = nullptr;
