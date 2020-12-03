@@ -37,6 +37,8 @@ public:
 	bool GetIsDead() const;
 
 	void FinishDataCollection();
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetIsAgonizing(bool bNewAgonizingValue);
 
 protected:
 	// Called when the game starts or when spawned
@@ -80,4 +82,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
 	UParticleSystem* ImplosionParticleEmitter = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
+	bool bAgonizing = false;
 };

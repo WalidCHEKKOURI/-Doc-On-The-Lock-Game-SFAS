@@ -27,6 +27,7 @@ EBTNodeResult::Type UBTTaskChasePlayer::ExecuteTask(UBehaviorTreeComponent& Owne
 		// move to the player's location
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(NPCAIController, PlayerLocation);
 
+
 		// finish with success
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return EBTNodeResult::Succeeded;

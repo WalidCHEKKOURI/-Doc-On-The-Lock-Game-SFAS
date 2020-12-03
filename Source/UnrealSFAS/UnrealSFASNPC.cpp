@@ -142,3 +142,8 @@ void AUnrealSFASNPC::FinishDataCollection()
 
 }
 
+void  AUnrealSFASNPC::SetIsAgonizing(bool bNewAgonizingValue)
+{
+	bAgonizing = bNewAgonizingValue;
+}
+
