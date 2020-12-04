@@ -18,6 +18,8 @@
 #include "MainCharacterAttributeSet.h"
 #include <GameplayEffectTypes.h>
 #include "Kismet/GameplayStatics.h"
+#include "UnrealSFASNPC.h"
+
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -116,6 +118,9 @@ void AUnrealSFASCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AUnrealSFASCharacter::OnResetVR);
+
+	// FlashLight effect input binding
+	PlayerInputComponent->BindAction("FlashLight", IE_Pressed, this, &AUnrealSFASCharacter::ApplyFlashLight);
 }
 
 
@@ -425,5 +430,37 @@ float AUnrealSFASCharacter::GetBatteryEnergy() const
 {
 
 	return Attributes->GetBatteryEnergy();
+
+}
+
+void AUnrealSFASCharacter::ApplyFlashLight()
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("FlashLight Here"));
+	//Get FlashLight Socket Location
+	FVector SocketLocation = GetMesh()->GetSocketLocation("FlashLightSocket");
+	FVector EndLocation = SocketLocation + (GetMesh()->GetRightVector() * -1.f * FlashLightReach);
+
+
+	//Create the box shape we want to trace
+	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(30, 30, 30));
+	FHitResult SweepResult;
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->SweepSingleByChannel(SweepResult, SocketLocation, EndLocation, FQuat::Identity, ECollisionChannel::ECC_Pawn, Shape, CollisionParams))
+	{
+
+
+		if (Cast<AUnrealSFASNPC>(SweepResult.GetActor()))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
+		}
+
+	}
+
+
+
 
 }

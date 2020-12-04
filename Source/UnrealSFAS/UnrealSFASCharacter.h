@@ -140,6 +140,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovingForwardAxisValue() const;
 
+	UFUNCTION(BlueprintCallable, Category = "FlashLight")
+	void ApplyFlashLight();
+
 	UFUNCTION(BlueprintCallable, Category = "GAS")
 	float GetTemperature() const;
 
@@ -172,6 +175,8 @@ private:
 	UPROPERTY( )
 	float MovingForwardAxisValue = 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FlashLight", meta = (AllowPrivateAccess = "true"))
+	float FlashLightReach = 200;
 
 };
 
