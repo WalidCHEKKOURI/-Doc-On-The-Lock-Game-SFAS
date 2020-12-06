@@ -36,9 +36,13 @@ public:
 
 	bool GetIsDead() const;
 
-	void FinishDataCollection();
+
+
 	UFUNCTION(BlueprintCallable, Category = "AI")
-		void SetIsAgonizing(bool bNewAgonizingValue);
+	void SetIsAgonizing(bool bNewAgonizingValue);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void SetDistracted(bool isDistracted);
 
 protected:
 	// Called when the game starts or when spawned
@@ -77,8 +81,10 @@ private:
 	UPROPERTY()
 	bool bDead = false;
 
-	UPROPERTY()
-	bool bDataCollected = false;
+	/* Is character distracted */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	bool bDistracted = false;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
 	UParticleSystem* ImplosionParticleEmitter = nullptr;

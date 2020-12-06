@@ -8,6 +8,9 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "UnrealSFASCharacter.h"
 #include "DeathCauses.h"
+#include "NPCAIController.h"
+#include "BlackBoardKeys.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Sets default values
 AUnrealSFASNPC::AUnrealSFASNPC()
@@ -135,15 +138,33 @@ float AUnrealSFASNPC::GetHeadSize() const
 }
 
 
-void AUnrealSFASNPC::FinishDataCollection()
-{
 
-	bDataCollected = true;
-
-}
 
 void  AUnrealSFASNPC::SetIsAgonizing(bool bNewAgonizingValue)
 {
 	bAgonizing = bNewAgonizingValue;
 }
+
+// Called to distract NPC if it's not already distracted
+void  AUnrealSFASNPC::SetDistracted(bool isDistracted)
+{
+	
+		
+	ANPCAIController* SavedController = Cast<ANPCAIController>(GetController());
+	if (isDistracted && !bDistracted)//Distract if not already distracted
+	{
+		bDistracted = isDistracted;
+		
+		SavedController->GetBlackboardComp()->SetValueAsBool(bbKeys::distracted, isDistracted);
+	}	
+	else if (!isDistracted)//Clear value
+	{
+		bDistracted = isDistracted;
+		SavedController->GetBlackboardComp()->ClearValue(bbKeys::distracted);
+	}
+		
+	
+	
+}
+
 

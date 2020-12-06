@@ -54,6 +54,7 @@ class AUnrealSFASCharacter : public ACharacter, public IAbilitySystemInterface
 public:
 	AUnrealSFASCharacter();
 
+	//Called to kill player, used different death causes
 	void Kill(TEnumAsByte<EDeathCauses> DeathType);
 	
 		
@@ -87,7 +88,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> TemperatureEffectByAI;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	/* Effects battery energy when flashlight is used*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> FlashLightBatteryEffect;
+
+	//the temperature required to die
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float MaxTemperature = 40.f;
 
 protected:
@@ -140,23 +146,32 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovingForwardAxisValue() const;
 
+	// Called to distract use the FlashLight ability
 	UFUNCTION(BlueprintCallable, Category = "FlashLight")
 	void ApplyFlashLight();
 
+	// Called to return current Temperature
 	UFUNCTION(BlueprintCallable, Category = "GAS")
 	float GetTemperature() const;
 
+	// Called to to return current Battery energy
 	UFUNCTION(BlueprintCallable, Category = "GAS")
 	float GetBatteryEnergy() const;
 
+	// Called to apply effect on Battery Energy
 	void ChangeBatteryEnergy();
 
+	// Called to apply affect on Temperature by NPC
 	void ChangeTemperatureByAI();
+
+	// Called to distract NPC if it's not already distracted
+	void ChangeBatteryEnergyByFlashLightEffect();
 
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;
 	void SetupStimulus();
 
+	//Is the player dead
 	UPROPERTY()
 	bool bDead = false;
 
@@ -175,8 +190,12 @@ private:
 	UPROPERTY( )
 	float MovingForwardAxisValue = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FlashLight", meta = (AllowPrivateAccess = "true"))
+	//The distance the flashlight can reach to distract NPC
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float FlashLightReach = 200;
 
+	//Min battery energy to use flashlight as distraction
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	float MinBatteryPowerForFlashLight = 70.f;
 };
 

@@ -448,18 +448,64 @@ void AUnrealSFASCharacter::ApplyFlashLight()
 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
-
+	AUnrealSFASNPC* NPC = nullptr;
 	if (GetWorld()->SweepSingleByChannel(SweepResult, SocketLocation, EndLocation, FQuat::Identity, ECollisionChannel::ECC_Pawn, Shape, CollisionParams))
 	{
 
-
-		if (Cast<AUnrealSFASNPC>(SweepResult.GetActor()))
+		NPC = Cast<AUnrealSFASNPC>(SweepResult.GetActor());
+		if (NPC)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
+			float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
+
+			//Flashlight can only be used if battery power is >= MinBatteryFlashLightPower: example 70.
+			if (CurrentBatteryEnergy >= MinBatteryPowerForFlashLight)
+			{
+				//Distract NPC
+				NPC->SetDistracted(true);
+
+				//Apply battery energy effect to decrease its energy
+				ChangeBatteryEnergyByFlashLightEffect();
+				UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
+			}
+			
 		}
 
 	}
 
+
+
+
+}
+
+//Called to apply battery energy effect by flashlight
+void AUnrealSFASCharacter::ChangeBatteryEnergyByFlashLightEffect()
+{
+
+
+	if (!bDead)
+	{
+
+		
+			if (AbilitySystemComponent && FlashLightBatteryEffect)
+			{
+				// The context in which we applying the effect
+				FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+				EffectContext.AddSourceObject(this);
+
+
+				FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(FlashLightBatteryEffect, 1, EffectContext);
+				if (SpecHandle.IsValid())
+				{
+					//Apply the effect to our main player character
+					FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+				}
+			}
+
+		
+		
+
+	}
 
 
 
