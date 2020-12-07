@@ -21,8 +21,8 @@ AUnrealSFASNPC::AUnrealSFASNPC()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-
-
+	//Populate the DataCollected array with 0
+	bDataCollected.Init(0, 2);
 		
 }
 
@@ -167,4 +167,43 @@ void  AUnrealSFASNPC::SetDistracted(bool isDistracted)
 	
 }
 
+// Called to determine if data is already collected
+bool AUnrealSFASNPC::bCanCollectData()
+{
+	
+	return (bDataCollected[0] && bDataCollected[1]) ? false : true;
 
+
+}
+
+//Called to determine if data was collected successfully
+bool AUnrealSFASNPC::CollectNPCData(float DotProductRes)
+{
+
+	UE_LOG(LogTemp, Error, TEXT("NPC Data collected %f"), DotProductRes);
+
+	if (bCanCollectData())
+	{
+		if (DotProductRes < 0)//Front Side 
+			bDataCollected[0] = 1;
+		else //Back Side
+			bDataCollected[1] = 1;
+
+		return true;
+	}
+	else
+		return false;
+
+}
+
+//Called to return the number of Data Collected, either 0,1 or 2
+int AUnrealSFASNPC::CurrentCollectedData() const
+{
+	int Count = 0;
+
+	for (bool element : bDataCollected)
+		if (element) Count++;
+	
+
+	return Count;
+}

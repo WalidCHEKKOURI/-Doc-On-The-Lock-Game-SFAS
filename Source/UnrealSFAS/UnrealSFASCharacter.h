@@ -92,6 +92,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> FlashLightBatteryEffect;
 
+	/* Effects battery energy when collecting data*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAS")
+	TSubclassOf<class UGameplayEffect> CollectingDataBatteryEffect;
+
 	//the temperature required to die
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float MaxTemperature = 40.f;
@@ -147,8 +151,8 @@ public:
 	float GetMovingForwardAxisValue() const;
 
 	// Called to distract use the FlashLight ability
-	UFUNCTION(BlueprintCallable, Category = "FlashLight")
 	void ApplyFlashLight();
+
 
 	// Called to return current Temperature
 	UFUNCTION(BlueprintCallable, Category = "GAS")
@@ -167,9 +171,15 @@ public:
 	// Called to distract NPC if it's not already distracted
 	void ChangeBatteryEnergyByFlashLightEffect();
 
+	// Called to apply effect on battery energy when collecting data
+	void ChangeBatteryEnergyByCollectingDataEffect();
+
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;
 	void SetupStimulus();
+
+	//Called to collect data from NPC
+	void CollectData();
 
 	//Is the player dead
 	UPROPERTY()

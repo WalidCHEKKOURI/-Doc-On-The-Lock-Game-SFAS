@@ -19,6 +19,7 @@
 #include <GameplayEffectTypes.h>
 #include "Kismet/GameplayStatics.h"
 #include "UnrealSFASNPC.h"
+#include "Components/ArrowComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
@@ -121,6 +122,10 @@ void AUnrealSFASCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 
 	// FlashLight effect input binding
 	PlayerInputComponent->BindAction("FlashLight", IE_Pressed, this, &AUnrealSFASCharacter::ApplyFlashLight);
+
+	// CollectData input binding
+	PlayerInputComponent->BindAction("CollectData", IE_Pressed, this, &AUnrealSFASCharacter::CollectData);
+	
 }
 
 
@@ -391,8 +396,8 @@ void AUnrealSFASCharacter::ChangeTemperatureByAI()
 		UE_LOG(LogTemp, Warning, TEXT("Current Temperature: %f"), CurrentTemperature);
 		if (CurrentTemperature >= (MaxTemperature)) 
 		{
-			//Kill(EDeathCauses::HighTemperature);//Killed by High Temperature
-			//return;
+			Kill(EDeathCauses::HighTemperature);//Killed by High Temperature
+			return;
 		}
 
 		if (AbilitySystemComponent && TemperatureEffectByAI)
@@ -436,7 +441,6 @@ float AUnrealSFASCharacter::GetBatteryEnergy() const
 void AUnrealSFASCharacter::ApplyFlashLight()
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("FlashLight Here"));
 	//Get FlashLight Socket Location
 	FVector SocketLocation = GetMesh()->GetSocketLocation("FlashLightSocket");
 	FVector EndLocation = SocketLocation + (GetMesh()->GetRightVector() * -1.f * FlashLightReach);
@@ -504,6 +508,86 @@ void AUnrealSFASCharacter::ChangeBatteryEnergyByFlashLightEffect()
 
 		
 		
+
+	}
+
+
+
+}
+
+
+//Called to collect data about NPC
+void AUnrealSFASCharacter::CollectData()
+{
+
+	
+	
+	//Get FlashLight Socket Location
+	FVector SocketLocation = GetMesh()->GetSocketLocation("FlashLightSocket");
+	FVector EndLocation = SocketLocation + (GetMesh()->GetRightVector() * -1.f * FlashLightReach);
+
+
+	//Create the box shape we want to trace
+	FCollisionShape Shape = FCollisionShape::MakeBox(FVector(30, 30, 30));
+	FHitResult SweepResult;
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	AUnrealSFASNPC* NPC = nullptr;
+	if (GetWorld()->SweepSingleByChannel(SweepResult, SocketLocation, EndLocation, FQuat::Identity, ECollisionChannel::ECC_Pawn, Shape, CollisionParams))
+	{
+
+		NPC = Cast<AUnrealSFASNPC>(SweepResult.GetActor());
+		if (NPC)
+		{
+			
+				//Vector of the trace
+				FVector HitVector = (EndLocation - SocketLocation);
+				float DotProductResult = FVector::DotProduct(NPC->GetArrowComponent()->GetForwardVector().GetSafeNormal(), HitVector.GetSafeNormal());
+				if (NPC->CollectNPCData(DotProductResult))
+				{
+					//Apply battery energy effect to decrease its energy
+					ChangeBatteryEnergyByCollectingDataEffect();
+					UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
+				}
+				
+			
+
+		}
+
+	}
+
+
+}
+
+
+//Called to apply battery energy effect by collecting data
+void AUnrealSFASCharacter::ChangeBatteryEnergyByCollectingDataEffect()
+{
+
+
+	if (!bDead)
+	{
+
+
+		if (AbilitySystemComponent && CollectingDataBatteryEffect)
+		{
+			// The context in which we applying the effect
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+
+			FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(CollectingDataBatteryEffect, 1, EffectContext);
+			if (SpecHandle.IsValid())
+			{
+				//Apply the effect to our main player character
+				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+			}
+		}
+
+
+
 
 	}
 
