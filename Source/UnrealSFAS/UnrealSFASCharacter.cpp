@@ -20,7 +20,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UnrealSFASNPC.h"
 #include "Components/ArrowComponent.h"
-
+#include "SFASPlayerController.h"
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -546,6 +546,9 @@ void AUnrealSFASCharacter::CollectData()
 				float DotProductResult = FVector::DotProduct(NPC->GetArrowComponent()->GetForwardVector().GetSafeNormal(), HitVector.GetSafeNormal());
 				if (NPC->CollectNPCData(DotProductResult))
 				{
+					//Add score for total collected data
+					ASFASPlayerController* SFASPlayerController  = Cast<ASFASPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+					SFASPlayerController->AddTotalCollectedData();
 					//Apply battery energy effect to decrease its energy
 					ChangeBatteryEnergyByCollectingDataEffect();
 					UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
