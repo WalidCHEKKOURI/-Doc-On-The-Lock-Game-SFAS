@@ -11,19 +11,26 @@
 #include "NPCAIController.h"
 #include "BlackBoardKeys.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AUnrealSFASNPC::AUnrealSFASNPC()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	//Populate the DataCollected array with 0
 	bDataCollected.Init(0, 2);
-		
+
+	//Setup CollisionVolume
+	CollisionVolume = CreateDefaultSubobject<UBoxComponent>(FName("CollisionVolume"));
+	CollisionVolume->SetupAttachment(RootComponent);
+	CollisionVolume->OnComponentBeginOverlap.AddDynamic(this, &AUnrealSFASNPC::PlayerStartOverlap);
+	CollisionVolume->OnComponentEndOverlap.AddDynamic(this, &AUnrealSFASNPC::PlayerEndOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -33,12 +40,7 @@ void AUnrealSFASNPC::BeginPlay()
 
 }
 
-// Called every frame
-void AUnrealSFASNPC::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
-}
 
 
 // Called to kill NPC
@@ -206,4 +208,32 @@ int AUnrealSFASNPC::CurrentCollectedData() const
 	
 
 	return Count;
+}
+
+void AUnrealSFASNPC::PlayerStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//DrawDebugSphere(GetWorld(), OverlappedComponent->GetComponentLocation(), 5.0f, 32, FColor::Red, true, .5f);
+	
+
+	AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(OtherActor);
+	if (Player)
+	{
+		OnPlayerStartOverlap();
+		UE_LOG(LogTemp, Warning, TEXT("Overlapping start Player"));
+	}
+}
+
+
+
+void AUnrealSFASNPC::PlayerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
+	AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(OtherActor);
+	if (Player)
+	{
+		OnPlayerEndOverlap();
+		UE_LOG(LogTemp, Warning, TEXT("Overlapping end Player"));
+	}
+
+
 }

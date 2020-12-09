@@ -19,11 +19,10 @@ public:
 	// Sets default values for this character's properties
 	AUnrealSFASNPC();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 
 	// get the patrol path of this NPC
+	UFUNCTION()
 	AUnrealSFASPatrolPath* GetPatrolPath() const;
 
 
@@ -36,6 +35,7 @@ public:
 	float GetHeadSize() const;
 
 	//Returns if NPC is dead
+	UFUNCTION()
 	bool GetIsDead() const;
 
 
@@ -53,6 +53,17 @@ public:
 	//Called to return the number of Data Collected, either 0,1 or 2
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	int CurrentCollectedData() const;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Collison")
+	class UBoxComponent* CollisionVolume = nullptr;
+
+	//Implemented in BP & triggered whenever we end overlapping the player
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Collision")
+		void OnPlayerStartOverlap();
+
+	//Implemented in BP & triggered whenever we end overlapping the player
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Collision")
+		void OnPlayerEndOverlap();
 
 protected:
 	// Called when the game starts or when spawned
@@ -85,6 +96,7 @@ private:
 	class UAnimInstance* NPCAnimInstance = nullptr;
 
 	/*  Called to Kill NPC pawn*/
+	UFUNCTION()
 	void KillNPC();
 
 	/* Is character dead */
@@ -108,7 +120,15 @@ private:
 		TArray<bool> bDataCollected;
 
 	// Called to determine if data is already collected
+	UFUNCTION()
 	bool bCanCollectData();
 
-	
+	//Called when overlapping an actor starts
+	UFUNCTION()
+	void PlayerStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	//Called when overlapping an actor ends
+	UFUNCTION()
+		void PlayerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };
