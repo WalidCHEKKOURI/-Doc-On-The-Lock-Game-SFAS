@@ -186,12 +186,20 @@ bool AUnrealSFASNPC::CollectNPCData(float DotProductRes)
 
 	if (bCanCollectData())
 	{
-		if (DotProductRes < 0)//Front Side 
+		if (DotProductRes < 0 && bDataCollected[0] ==0)//Front Side, collect it not already collected
+		{
 			bDataCollected[0] = 1;
-		else //Back Side
+			return true;
+		}
+		
+		else if (DotProductRes >= 0 && bDataCollected[1] == 0) //Back Side collect it not already collected
+		{
 			bDataCollected[1] = 1;
-
-		return true;
+			return true;
+		}
+			
+		return false;
+		
 	}
 	else
 		return false;
