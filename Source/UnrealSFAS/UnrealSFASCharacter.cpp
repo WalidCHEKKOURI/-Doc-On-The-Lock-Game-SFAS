@@ -101,17 +101,8 @@ void AUnrealSFASCharacter::BeginPlay()
 	if(BeepSoundCue)
 		BeepAudioComponent = UGameplayStatics::SpawnSound2D(this, BeepSoundCue);
 	if (BeepAudioComponent && BeepSoundCue)
-	{
-		//BeepAudioComponent->SetSound(BeepSoundCue);
-
-
-		
-			
-		//	BeepAudioComponent->bAutoActivate = true;
-		
-
 		BeepAudioComponent->Play();
-	}
+	
 	
 }
 
@@ -293,7 +284,8 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 		bDead = true;
 		bUseControllerRotationYaw = false;
 		FTimerHandle handle;
-
+		//Stop beeping sound
+		BeepAudioComponent->Stop();
 		//Spawn Death Emitter
 		if (DeathParticleEmitter)
 		{
@@ -380,6 +372,8 @@ void AUnrealSFASCharacter::ChangeBatteryEnergy()
 						{
 							//Apply the effect to our main player character
 							FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+							//Make sure to let the camera effect know that battery change is done
+							OnBatteryEffectChanged();
 						}
 					}
 
@@ -439,6 +433,8 @@ void AUnrealSFASCharacter::ChangeTemperatureByAI()
 				//Apply the effect to our main player character
 				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 			
+				//Inform BP on the temperature change
+				OnTemperatureEffectChanged();
 			}
 		}
 
@@ -578,7 +574,9 @@ void AUnrealSFASCharacter::CollectData()
 					SFASPlayerController->AddTotalCollectedData();
 					//Apply battery energy effect to decrease its energy
 					ChangeBatteryEnergyByCollectingDataEffect();
-					if(CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, GetActorTransform(), true);
+					FTransform Particletransform = GetActorTransform();
+					Particletransform.SetLocation(SocketLocation);
+					if(CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, Particletransform, true);
 					UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
 				}
 				

@@ -32,15 +32,15 @@ class AUnrealSFASCharacter : public ACharacter, public IAbilitySystemInterface
 	float NeckArmRotationAroundAxis;
 
 	/** Front camera turn rate */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	float FrontCameraTurnRate;
 
 	/** Front camera maximum rotation around an axis */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		float FrontCameraMaxTurnAroundAxis;
 
 	/** Front camera minimum rotation around an axis */
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		float FrontCameraMinTurnAroundAxis;
 
 	/** GAS component */
@@ -107,6 +107,14 @@ public:
 	/* called to change the pitch of the beeping sound, 200 value when NPC is near if not then 1.f */
 	UFUNCTION()
 	void ChangeBeepAudioPitch(float NewPitch);
+
+	/* Event implemented in BP, called to adjust camera effect based on battery power*/
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnBatteryEffectChangedGAS"))
+	void OnBatteryEffectChanged();
+
+	/* Event implemented in BP, called to adjust camera effect based on temperature level*/
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnTemperatureEffectChangedGAS"))
+		void OnTemperatureEffectChanged();
 
 protected:
 

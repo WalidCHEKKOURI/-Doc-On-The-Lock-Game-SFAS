@@ -44,4 +44,8 @@ public:
 	/* Effects to apply*/
 	UPROPERTY(BlueprintReadWrite, Category = "GAS")
 	TSubclassOf<class UGameplayEffect> EffectToApply;
+
+	// if it's a battery collectible or a temperature collectible
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "CollectibleType", meta = (AllowPrivateAccess = "true"))
+		bool bIsBattery = false;
 };
