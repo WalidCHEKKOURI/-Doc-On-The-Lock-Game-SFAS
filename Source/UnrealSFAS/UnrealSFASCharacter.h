@@ -204,9 +204,14 @@ private:
 	/* Character's death animation montage*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Montages", meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* DeathAnimMontage;
-
+	
+	/* Death particle system*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
 	UParticleSystem* DeathParticleEmitter;
+
+	/* Collecting Data particle system*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
+	UParticleSystem* CollectingDataParticleEmitter;
 
 	/* Character's AnimationInstance*/
 	UPROPERTY()

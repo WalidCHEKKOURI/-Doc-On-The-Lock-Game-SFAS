@@ -578,6 +578,7 @@ void AUnrealSFASCharacter::CollectData()
 					SFASPlayerController->AddTotalCollectedData();
 					//Apply battery energy effect to decrease its energy
 					ChangeBatteryEnergyByCollectingDataEffect();
+					if(CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, GetActorTransform(), true);
 					UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
 				}
 				
