@@ -66,7 +66,7 @@ void AUnrealSFASNPC::KillNPC()
 		else
 			UE_LOG(LogTemp, Error, TEXT("Death Montage is null !"));
 
-		/* get player character and the NPC's controller */
+		/* get player character  */
 		AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		
 		Player->Kill(EDeathCauses::NPCImplosion); //Kill player too

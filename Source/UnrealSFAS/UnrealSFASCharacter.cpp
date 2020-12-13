@@ -21,6 +21,8 @@
 #include "UnrealSFASNPC.h"
 #include "Components/ArrowComponent.h"
 #include "SFASPlayerController.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 //////////////////////////////////////////////////////////////////////////
 // AUnrealSFASCharacter
 
@@ -78,6 +80,13 @@ AUnrealSFASCharacter::AUnrealSFASCharacter()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	Attributes = CreateDefaultSubobject<UMainCharacterAttributeSet>(TEXT("Attributes"));
+
+	//Setup sound component
+	//BeepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioBeepComp"));
+	//BeepAudioComponent->AttachParent = RootComponent;
+	
+		
+
 }
 
 // Called when the game starts or when spawned
@@ -87,6 +96,23 @@ void AUnrealSFASCharacter::BeginPlay()
 
 	//Batter Energy starts to drain 
 	ChangeBatteryEnergy();
+
+	//Play beeping sound
+	if(BeepSoundCue)
+		BeepAudioComponent = UGameplayStatics::SpawnSound2D(this, BeepSoundCue);
+	if (BeepAudioComponent && BeepSoundCue)
+	{
+		//BeepAudioComponent->SetSound(BeepSoundCue);
+
+
+		
+			
+		//	BeepAudioComponent->bAutoActivate = true;
+		
+
+		BeepAudioComponent->Play();
+	}
+	
 }
 
 
@@ -412,6 +438,7 @@ void AUnrealSFASCharacter::ChangeTemperatureByAI()
 			{
 				//Apply the effect to our main player character
 				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			
 			}
 		}
 
@@ -598,4 +625,11 @@ void AUnrealSFASCharacter::ChangeBatteryEnergyByCollectingDataEffect()
 
 }
 
+// Change beep audio pitch, called by NPC
+void AUnrealSFASCharacter::ChangeBeepAudioPitch(float NewPitch)
+{
+	if(BeepAudioComponent)
+		BeepAudioComponent->SetPitchMultiplier(NewPitch);
+
+}
 

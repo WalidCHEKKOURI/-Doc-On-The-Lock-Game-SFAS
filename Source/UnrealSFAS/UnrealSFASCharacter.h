@@ -100,7 +100,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float MaxTemperature = 40.f;
 
+	/* Sound cue for beeping*/
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
+	class USoundCue* BeepSoundCue = nullptr;
 
+	/* called to change the pitch of the beeping sound, 200 value when NPC is near if not then 1.f */
+	UFUNCTION()
+	void ChangeBeepAudioPitch(float NewPitch);
 
 protected:
 
@@ -217,5 +223,13 @@ private:
 	//Min battery energy to use flashlight as distraction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float MinBatteryPowerForFlashLight = 70.f;
+
+	//Audio component for the beeping sound
+	UPROPERTY()
+		UAudioComponent* BeepAudioComponent = nullptr;
+
+
+
+
 };
 
