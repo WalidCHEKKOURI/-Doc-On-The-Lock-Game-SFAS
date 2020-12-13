@@ -100,6 +100,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	float MaxTemperature = 40.f;
 
+
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -163,16 +165,24 @@ public:
 	float GetBatteryEnergy() const;
 
 	// Called to apply effect on Battery Energy
+	UFUNCTION()
 	void ChangeBatteryEnergy();
 
 	// Called to apply affect on Temperature by NPC
+	UFUNCTION()
 	void ChangeTemperatureByAI();
 
 	// Called to distract NPC if it's not already distracted
+	UFUNCTION()
 	void ChangeBatteryEnergyByFlashLightEffect();
 
 	// Called to apply effect on battery energy when collecting data
+	UFUNCTION()
 	void ChangeBatteryEnergyByCollectingDataEffect();
+
+	//Called to check if player is dead
+	UFUNCTION()
+		FORCEINLINE bool GetIsDead() const { return bDead; }
 
 private:
 	class UAIPerceptionStimuliSourceComponent* Stimulus;

@@ -597,3 +597,5 @@ void AUnrealSFASCharacter::ChangeBatteryEnergyByCollectingDataEffect()
 
 
 }
+
+
