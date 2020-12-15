@@ -627,8 +627,12 @@ void AUnrealSFASCharacter::ChangeBatteryEnergyByCollectingDataEffect()
 // Change beep audio pitch, called by NPC
 void AUnrealSFASCharacter::ChangeBeepAudioPitch(float NewPitch)
 {
-	if(BeepAudioComponent)
-		BeepAudioComponent->SetPitchMultiplier(NewPitch);
+//	if (BeepAudioComponent!= nullptr && BeepSoundCue != nullptr)
+	//{
+		//if(BeepAudioComponent->IsPlaying())
+		//	BeepAudioComponent->SetPitchMultiplier(NewPitch);
+	//}
+		
 
 }
 
