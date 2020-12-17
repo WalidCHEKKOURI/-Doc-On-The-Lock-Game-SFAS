@@ -97,6 +97,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Maze)
 	UStaticMesh* WallMesh;
 
+	//Texture of the cube mesh
+	UPROPERTY(EditInstanceOnly, Category = Maze)
+	class UTexture* WallTexture ;
+
+	//Material of the cube mesh
+	UPROPERTY(EditDefaultsOnly, Category = Maze)
+		class UMaterial* ExampleMaterial;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly ,Category = Maze, meta = (ClampMin = "1", ClampMax = "3" , UIMin = "1", UIMax = "3"))
 	int MazeLevel = 1;
 };

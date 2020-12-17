@@ -3,6 +3,8 @@
 
 #include "UnrealSFASMaze.h"
 #include "NavigationSystem.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Engine/Texture.h"
 
 // Sets default values
 AUnrealSFASMaze::AUnrealSFASMaze()
@@ -11,8 +13,7 @@ AUnrealSFASMaze::AUnrealSFASMaze()
 	PrimaryActorTick.bCanEverTick = false;
 
 
-
-
+	
 
 }
 
@@ -21,8 +22,17 @@ void AUnrealSFASMaze::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (WallMesh)
+
+
+	if (WallMesh && ExampleMaterial && WallMesh)
 	{
+
+		//Setup Wall Mesh Texture
+		WallMesh->SetMaterial(0, ExampleMaterial);
+		UMaterialInstanceDynamic* CubeMeshDynamicMaterial = UMaterialInstanceDynamic::Create(ExampleMaterial, WallMesh);
+		WallMesh->SetMaterial(0, CubeMeshDynamicMaterial);
+		CubeMeshDynamicMaterial->SetTextureParameterValue(TEXT("Texture"), WallTexture);
+
 
 		const float blockSize = 200.0f;
 		const float blockWidth = 2.0f;
