@@ -16,6 +16,10 @@ public:
 	AUnrealSFASPatrolPath();
 
 	FVector GetPatrolPoint(int const index) const;
+
+	//Called to change the patrol points of the npc
+		void SetPatrolPoints(TArray<FVector> NewPatrolPoints);
+
 	int Num() const;
 
 private:

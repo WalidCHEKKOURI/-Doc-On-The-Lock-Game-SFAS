@@ -22,9 +22,12 @@ public:
 
 
 	// get the patrol path of this NPC
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	AUnrealSFASPatrolPath* GetPatrolPath() const;
 
+	//Called to change the patrol points of the npc
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetPatrolPathPoints(TArray<FVector> NewPatrolPoints);
 
 	// set the head size of this NPC
 	UFUNCTION(BlueprintCallable, Category = "AI")

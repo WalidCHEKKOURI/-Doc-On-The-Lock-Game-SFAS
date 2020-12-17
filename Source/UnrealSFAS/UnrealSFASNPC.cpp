@@ -105,6 +105,14 @@ AUnrealSFASPatrolPath* AUnrealSFASNPC::GetPatrolPath() const
 	return PatrolPath;
 }
 
+
+void AUnrealSFASNPC::SetPatrolPathPoints(TArray<FVector> NewPatrolPoints)
+{
+	PatrolPath->SetPatrolPoints(NewPatrolPoints);
+
+
+}
+
 // Called to return if NPC is dead
 bool AUnrealSFASNPC::GetIsDead() const
 {

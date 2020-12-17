@@ -24,3 +24,9 @@ int AUnrealSFASPatrolPath::Num() const
 {
 	return (PatrolPoints.Num()) ? PatrolPoints.Num() : -1;
 }
+
+void AUnrealSFASPatrolPath::SetPatrolPoints(TArray<FVector> NewPatrolPoints)
+{
+	PatrolPoints = NewPatrolPoints;
+
+}
