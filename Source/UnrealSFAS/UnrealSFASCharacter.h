@@ -241,8 +241,12 @@ private:
 	UPROPERTY()
 		UAudioComponent* BeepAudioComponent = nullptr;
 
+	//Cooldown period after collecting data
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+		float CollectDataCoolDown = 5.f;
 
-
-
+	// Variable to indicate if player is able to collect data or not
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+		bool bCanCollectData = true;
 };
 

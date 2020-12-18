@@ -569,15 +569,40 @@ void AUnrealSFASCharacter::CollectData()
 				float DotProductResult = FVector::DotProduct(NPC->GetArrowComponent()->GetForwardVector().GetSafeNormal(), HitVector.GetSafeNormal());
 				if (NPC->CollectNPCData(DotProductResult))
 				{
-					//Add score for total collected data
-					ASFASPlayerController* SFASPlayerController  = Cast<ASFASPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-					SFASPlayerController->AddTotalCollectedData();
-					//Apply battery energy effect to decrease its energy
-					ChangeBatteryEnergyByCollectingDataEffect();
-					FTransform Particletransform = GetActorTransform();
-					Particletransform.SetLocation(SocketLocation);
-					if(CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, Particletransform, true);
-					UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
+				
+
+
+
+					if (bCanCollectData)
+					{
+						bCanCollectData = false;
+
+
+
+						//Add score for total collected data
+						ASFASPlayerController* SFASPlayerController = Cast<ASFASPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+						SFASPlayerController->AddTotalCollectedData();
+						//Apply battery energy effect to decrease its energy
+						ChangeBatteryEnergyByCollectingDataEffect();
+						FTransform Particletransform = GetActorTransform();
+						Particletransform.SetLocation(GetActorLocation());
+						if (CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, Particletransform, true);
+						UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
+
+
+
+						FTimerHandle handle;
+						//Cooldown prior to reinitializing the CanCollectData variable
+						GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+							{
+
+								bCanCollectData = true;
+
+
+							}, CollectDataCoolDown,01);
+
+					}
+
 				}
 				
 			
@@ -635,4 +660,5 @@ void AUnrealSFASCharacter::ChangeBeepAudioPitch(float NewPitch)
 		
 
 }
+
 

@@ -22,30 +22,36 @@ protected:
 	UFUNCTION()
 	void ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-public:	
+
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (AllowPrivateAccess = "true"))
-		UParticleSystem* OverlapParticleEmitter = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		USceneComponent* Root;
 
+	//The volume of collision, we use this to detect overlaps with pawns, specifically with the player pawn
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Collison")
 	class USphereComponent* CollisionVolume = nullptr;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//the rotation rate of the collectible
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float RotationRate;
 
 	/* Effects to apply*/
-	UPROPERTY(BlueprintReadWrite, Category = "GAS")
+	UPROPERTY(BlueprintReadWrite, Category = "GAS", meta = (AllowPrivateAccess = "true", ExposeOnSpawn = "true"))
 	TSubclassOf<class UGameplayEffect> EffectToApply;
 
 	// if it's a battery collectible or a temperature collectible
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "CollectibleType", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "CollectibleType", meta = (AllowPrivateAccess = "true", ExposeOnSpawn= "true") )
 		bool bIsBattery = false;
+
+public:
+
+	// Particle Emitter spawned on overlap with player
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ParticleSystem", meta = (ExposeOnSpawn = "true"))
+		UParticleSystem * OverlapParticleEmitter = nullptr;
+
 };
