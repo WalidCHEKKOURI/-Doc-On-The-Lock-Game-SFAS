@@ -566,7 +566,7 @@ void AUnrealSFASCharacter::CollectData()
 			
 				//Vector of the trace
 				FVector HitVector = (EndLocation - SocketLocation);
-				float DotProductResult = FVector::DotProduct(NPC->GetArrowComponent()->GetForwardVector().GetSafeNormal(), HitVector.GetSafeNormal());
+				float DotProductResult = FVector::DotProduct(NPC->GetActorForwardVector().GetSafeNormal(), HitVector.GetSafeNormal());
 				if (NPC->CollectNPCData(DotProductResult))
 				{
 				
