@@ -194,17 +194,22 @@ bool AUnrealSFASNPC::bCanCollectData()
 bool AUnrealSFASNPC::CollectNPCData(float DotProductRes)
 {
 
-	UE_LOG(LogTemp, Error, TEXT("NPC Data collected %f"), DotProductRes);
+	UE_LOG(LogTemp, Warning, TEXT("NPC Data collected, DotProduct Value: %f"), DotProductRes);
 
 	if (bCanCollectData())
 	{
-		if (DotProductRes < 0 && bDataCollected[0] ==0)//Front Side, collect it not already collected
+		if (DotProductRes < 0 && bDataCollected[0] ==0 && !bDistracted)//Front Side, collect it not already collected
 		{
 			bDataCollected[0] = 1;
 			return true;
 		}
 		
-		else if (DotProductRes >= 0 && bDataCollected[1] == 0) //Back Side collect it not already collected
+		else if (DotProductRes >= 0 && bDataCollected[1] == 0 && !bDistracted) //Back Side collect it not already collected
+		{
+			bDataCollected[1] = 1;
+			return true;
+		}
+		else if (bDistracted && DotProductRes < 0 && bDataCollected[1] == 0 )//When distracted, it's considered from the back
 		{
 			bDataCollected[1] = 1;
 			return true;
