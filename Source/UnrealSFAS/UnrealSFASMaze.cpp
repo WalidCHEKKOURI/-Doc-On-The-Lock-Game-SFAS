@@ -28,11 +28,12 @@ void AUnrealSFASMaze::BeginPlay()
 	{
 
 		//Setup Wall Mesh Texture
+		/*
 		WallMesh->SetMaterial(0, ExampleMaterial);
 		UMaterialInstanceDynamic* CubeMeshDynamicMaterial = UMaterialInstanceDynamic::Create(ExampleMaterial, WallMesh);
 		WallMesh->SetMaterial(0, CubeMeshDynamicMaterial);
 		CubeMeshDynamicMaterial->SetTextureParameterValue(TEXT("Texture"), WallTexture);
-
+		*/
 
 		const float blockSize = 200.0f;
 		const float blockWidth = 2.0f;
@@ -90,6 +91,13 @@ void AUnrealSFASMaze::BeginPlay()
 
 					meshComponent->SetStaticMesh(WallMesh);
 					meshComponent->SetWorldTransform(worldXForm);
+
+					meshComponent->SetMaterial(0, ExampleMaterial);
+					UMaterialInstanceDynamic* CubeMeshDynamicMaterial = UMaterialInstanceDynamic::Create(ExampleMaterial, meshComponent);
+					meshComponent->SetMaterial(0, CubeMeshDynamicMaterial);
+					CubeMeshDynamicMaterial->SetTextureParameterValue(TEXT("Texture"), WallTexture);
+
+
 					meshComponent->AttachToComponent(rootComponent, FAttachmentTransformRules::KeepWorldTransform);
 					meshComponent->RegisterComponent();
 				}
