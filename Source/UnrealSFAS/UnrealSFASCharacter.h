@@ -116,6 +116,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnTemperatureEffectChangedGAS"))
 		void OnTemperatureEffectChanged();
 
+
+
 protected:
 
 	/** Resets HMD orientation in VR. */
