@@ -46,6 +46,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetIsAgonizing(bool bNewAgonizingValue);
 
+	//Called to get the distracted state of NPC
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		bool GetDistracted() const;
+
 	//Called to set the distracted state of NPC
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetDistracted(bool isDistracted);

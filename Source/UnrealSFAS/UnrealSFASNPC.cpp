@@ -148,7 +148,11 @@ float AUnrealSFASNPC::GetHeadSize() const
 }
 
 
-
+bool AUnrealSFASNPC::GetDistracted() const
+{
+	
+		return bDistracted;
+}
 
 void  AUnrealSFASNPC::SetIsAgonizing(bool bNewAgonizingValue)
 {

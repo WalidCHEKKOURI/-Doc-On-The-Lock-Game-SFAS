@@ -482,19 +482,21 @@ void AUnrealSFASCharacter::ApplyFlashLight()
 		NPC = Cast<AUnrealSFASNPC>(SweepResult.GetActor());
 		if (NPC)
 		{
-			float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
-
-			//Flashlight can only be used if battery power is >= MinBatteryFlashLightPower: example 70.
-			if (CurrentBatteryEnergy >= MinBatteryPowerForFlashLight)
+			if (!NPC->GetDistracted())
 			{
-				//Distract NPC
-				NPC->SetDistracted(true);
+				float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
 
-				//Apply battery energy effect to decrease its energy
-				ChangeBatteryEnergyByFlashLightEffect();
-				UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
+				//Flashlight can only be used if battery power is >= MinBatteryFlashLightPower: example 70.
+				if (CurrentBatteryEnergy >= MinBatteryPowerForFlashLight)
+				{
+					//Distract NPC
+					NPC->SetDistracted(true);
+
+					//Apply battery energy effect to decrease its energy
+					ChangeBatteryEnergyByFlashLightEffect();
+					UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
+				}
 			}
-			
 		}
 
 	}

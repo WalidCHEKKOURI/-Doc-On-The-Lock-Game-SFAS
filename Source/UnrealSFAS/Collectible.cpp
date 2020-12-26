@@ -44,50 +44,51 @@ void ACollectible::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor*
 
 	AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(OtherActor);
 
-
-	if (!Player->GetIsDead())
+	if (Player)
 	{
-
-
-		if (Player->GetAbilitySystemComponent() && EffectToApply)
+		if (!Player->GetIsDead())
 		{
-			// The context in which we applying the effect
-			FGameplayEffectContextHandle EffectContext = Player->GetAbilitySystemComponent()->MakeEffectContext();
-			EffectContext.AddSourceObject(this);
 
 
-			FGameplayEffectSpecHandle SpecHandle = Player->GetAbilitySystemComponent()->MakeOutgoingSpec(EffectToApply, 1, EffectContext);
-			if (SpecHandle.IsValid())
+			if (Player->GetAbilitySystemComponent() && EffectToApply)
 			{
-				if ((bIsBattery && Player->GetBatteryEnergy() <= 80.f) || (!bIsBattery && Player->GetTemperature() >= 35.f))
+				// The context in which we applying the effect
+				FGameplayEffectContextHandle EffectContext = Player->GetAbilitySystemComponent()->MakeEffectContext();
+				EffectContext.AddSourceObject(this);
+
+
+				FGameplayEffectSpecHandle SpecHandle = Player->GetAbilitySystemComponent()->MakeOutgoingSpec(EffectToApply, 1, EffectContext);
+				if (SpecHandle.IsValid())
 				{
-
-
-					//Apply the effect to our main player character
-					FActiveGameplayEffectHandle ActiveGEHandle = Player->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-
-					//Spawn emitter
-					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(GetActorLocation());
-					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticleEmitter, SpawnTransform, true);
-					
-					if (!bIsBattery)
+					if ((bIsBattery && Player->GetBatteryEnergy() <= 80.f) || (!bIsBattery && Player->GetTemperature() >= 35.f))
 					{
-						//Inform BP on the temperature change
-						Player->OnTemperatureEffectChanged();
+
+
+						//Apply the effect to our main player character
+						FActiveGameplayEffectHandle ActiveGEHandle = Player->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+						//Spawn emitter
+						FTransform SpawnTransform;
+						SpawnTransform.SetLocation(GetActorLocation());
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticleEmitter, SpawnTransform, true);
+
+						if (!bIsBattery)
+						{
+							//Inform BP on the temperature change
+							Player->OnTemperatureEffectChanged();
+						}
+
+						Destroy();
+
 					}
-					
-					Destroy();
 
 				}
-				
 			}
+
+
+
+
 		}
-
-	
-
-
 	}
-
 }
 
