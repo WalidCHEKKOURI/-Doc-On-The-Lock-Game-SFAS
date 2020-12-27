@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "DeathCauses.h"
 #include "SFASPlayerController.generated.h"
 
 /**
@@ -32,4 +33,8 @@ public:
 	/* Called to add to the total collected data */
 	UFUNCTION(BlueprintCallable, Category = "Score")
 		void AddTotalCollectedData();
+
+	/* Event implemented in BP, called to inform player death cause*/
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnDeath"))
+	void OnDeath(EDeathCauses DeathType);
 };

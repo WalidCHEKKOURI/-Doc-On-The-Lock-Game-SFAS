@@ -281,6 +281,7 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 {
 	if (!bDead)
 	{
+		ASFASPlayerController* PlayerSavedController = Cast<ASFASPlayerController>(GetController());
 		bDead = true;
 		bUseControllerRotationYaw = false;
 		FTimerHandle handle;
@@ -315,7 +316,8 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 			GetWorld()->GetTimerManager().SetTimer(handle, [this]()
 				{
 					GetMesh()->bPauseAnims = true; // pause the animation
-
+					ASFASPlayerController* SavedController = Cast<ASFASPlayerController>(GetController());
+					SavedController->OnDeath(EDeathCauses::NPCImplosion);
 				}, (DeathAnimMontage->GetSectionLength(0) - 0.4), 0);
 
 
@@ -324,11 +326,16 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 		case EDeathCauses::LowBatteryEnergy:
 			GetMesh()->bPauseAnims = true; // pause the animation
 			UE_LOG(LogTemp, Warning, TEXT("Deah by Low Battery"));
+			
+			PlayerSavedController->OnDeath(EDeathCauses::LowBatteryEnergy);
 			break;
 
 		case EDeathCauses::HighTemperature:
 			GetMesh()->bPauseAnims = true; // pause the animation
 			UE_LOG(LogTemp, Warning, TEXT("Deah by High Temperature"));
+			
+			PlayerSavedController->OnDeath(EDeathCauses::HighTemperature);
+
 			break;
 
 
@@ -337,12 +344,12 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 			break;
 		}
 
-
+		
 
 	}
 	
 	
-
+	
 
 }
 
@@ -463,7 +470,7 @@ float AUnrealSFASCharacter::GetBatteryEnergy() const
 
 void AUnrealSFASCharacter::ApplyFlashLight()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Here 1FlashLight !"));
 	//Get FlashLight Socket Location
 	FVector SocketLocation = GetMesh()->GetSocketLocation("FlashLightSocket");
 	FVector EndLocation = SocketLocation + (GetMesh()->GetRightVector() * -1.f * FlashLightReach);
@@ -478,20 +485,23 @@ void AUnrealSFASCharacter::ApplyFlashLight()
 	AUnrealSFASNPC* NPC = nullptr;
 	if (GetWorld()->SweepSingleByChannel(SweepResult, SocketLocation, EndLocation, FQuat::Identity, ECollisionChannel::ECC_Pawn, Shape, CollisionParams))
 	{
-
+		UE_LOG(LogTemp, Warning, TEXT("Here 2FlashLight !"));
 		NPC = Cast<AUnrealSFASNPC>(SweepResult.GetActor());
 		if (NPC)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Here 3FlashLight !"));
 			if (!NPC->GetDistracted())
 			{
 				float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
-
+				UE_LOG(LogTemp, Warning, TEXT("Here 4FlashLight !"));
 				//Flashlight can only be used if battery power is >= MinBatteryFlashLightPower: example 70.
 				if (CurrentBatteryEnergy >= MinBatteryPowerForFlashLight)
 				{
 					//Distract NPC
 					NPC->SetDistracted(true);
-
+					FTransform Particletransform = GetActorTransform();
+					Particletransform.SetLocation(GetActorLocation());
+					if (CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, Particletransform, true);
 					//Apply battery energy effect to decrease its energy
 					ChangeBatteryEnergyByFlashLightEffect();
 					UE_LOG(LogTemp, Warning, TEXT("FlashLight Distraction!"));
@@ -586,9 +596,7 @@ void AUnrealSFASCharacter::CollectData()
 						SFASPlayerController->AddTotalCollectedData();
 						//Apply battery energy effect to decrease its energy
 						ChangeBatteryEnergyByCollectingDataEffect();
-						FTransform Particletransform = GetActorTransform();
-						Particletransform.SetLocation(GetActorLocation());
-						if (CollectingDataParticleEmitter) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CollectingDataParticleEmitter, Particletransform, true);
+					
 						UE_LOG(LogTemp, Warning, TEXT("Collected Data!"));
 
 
