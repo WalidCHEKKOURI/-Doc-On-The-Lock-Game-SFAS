@@ -72,6 +72,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Collision")
 		void OnPlayerEndOverlap();
 
+	/* Event implemented in BP, when NPC dies*/
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnDeath"))
+		void OnDeath();
+
+	/* Event implemented in BP, when NPC is distracted*/
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnDistracted"))
+		void OnDistracted();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

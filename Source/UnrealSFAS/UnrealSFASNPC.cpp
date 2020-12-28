@@ -68,7 +68,7 @@ void AUnrealSFASNPC::KillNPC()
 
 		/* get player character  */
 		AUnrealSFASCharacter* const Player = Cast<AUnrealSFASCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		
+		OnDeath();
 		Player->Kill(EDeathCauses::NPCImplosion); //Kill player too
 		UE_LOG(LogTemp, Warning, TEXT("Head Imploded !"));
 
@@ -168,7 +168,7 @@ void  AUnrealSFASNPC::SetDistracted(bool isDistracted)
 	if (isDistracted && !bDistracted)//Distract if not already distracted
 	{
 		bDistracted = isDistracted;
-		
+		OnDistracted();
 		SavedController->GetBlackboardComp()->SetValueAsBool(bbKeys::distracted, isDistracted);
 	}	
 	else if (!isDistracted)//Clear value
