@@ -165,13 +165,13 @@ void  AUnrealSFASNPC::SetDistracted(bool isDistracted)
 	
 		
 	ANPCAIController* SavedController = Cast<ANPCAIController>(GetController());
-	if (isDistracted && !bDistracted)//Distract if not already distracted
+	if (isDistracted && !bDistracted && !bAgonizing)//Distract if not already distracted
 	{
 		bDistracted = isDistracted;
 		OnDistracted();
 		SavedController->GetBlackboardComp()->SetValueAsBool(bbKeys::distracted, isDistracted);
 	}	
-	else if (!isDistracted)//Clear value
+	else if (!isDistracted && !bAgonizing)//Clear value
 	{
 		bDistracted = isDistracted;
 		SavedController->GetBlackboardComp()->ClearValue(bbKeys::distracted);

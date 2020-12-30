@@ -95,7 +95,22 @@ void AUnrealSFASCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Batter Energy starts to drain 
-	ChangeBatteryEnergy();
+	
+
+	FTimerHandle handle;
+	//Wait 3 seconds and start Changing Battery Energy
+	GetWorld()->GetTimerManager().SetTimer(handle, [this]()
+		{
+
+			
+
+			ChangeBatteryEnergy();
+
+
+		}, 3, 0);
+
+
+
 
 	//Play beeping sound
 	if(BeepSoundCue)
@@ -355,7 +370,7 @@ void AUnrealSFASCharacter::Kill(TEnumAsByte<EDeathCauses> DeathType)
 
 void AUnrealSFASCharacter::ChangeBatteryEnergy()
 {
-	
+	if (!Attributes || !AbilitySystemComponent) return;
 		FTimerHandle handle;
 		//Loop every 3 seconds to decreaseBatterEnergy
 		GetWorld()->GetTimerManager().SetTimer(handle, [this]()
@@ -363,7 +378,7 @@ void AUnrealSFASCharacter::ChangeBatteryEnergy()
 
 				if (!bDead)
 				{
-
+					
 					float CurrentBatteryEnergy = Attributes->GetBatteryEnergy();
 
 
@@ -662,11 +677,11 @@ void AUnrealSFASCharacter::ChangeBatteryEnergyByCollectingDataEffect()
 // Change beep audio pitch, called by NPC
 void AUnrealSFASCharacter::ChangeBeepAudioPitch(float NewPitch)
 {
-//	if (BeepAudioComponent!= nullptr && BeepSoundCue != nullptr)
-	//{
-		//if(BeepAudioComponent->IsPlaying())
-		//	BeepAudioComponent->SetPitchMultiplier(NewPitch);
-	//}
+	if (BeepAudioComponent!= nullptr && BeepSoundCue != nullptr)
+	{
+		if(BeepAudioComponent->IsPlaying())
+			BeepAudioComponent->SetPitchMultiplier(NewPitch);
+	}
 		
 
 }
