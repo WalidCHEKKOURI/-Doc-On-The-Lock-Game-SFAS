@@ -1,4 +1,13 @@
 # Doc-On-The-Lock-Game-SFAS
+![Main](https://user-images.githubusercontent.com/11277981/110936619-77b63c80-8331-11eb-8368-463a76a46c07.PNG)
+![2](https://user-images.githubusercontent.com/11277981/110936711-9d434600-8331-11eb-9706-7953ba93f14d.PNG)
+![3](https://user-images.githubusercontent.com/11277981/110936719-a03e3680-8331-11eb-8704-f92dbff56571.PNG)
+![5](https://user-images.githubusercontent.com/11277981/110936731-a46a5400-8331-11eb-8d7f-4fd8e489d883.PNG)
+![6](https://user-images.githubusercontent.com/11277981/110936735-a6341780-8331-11eb-8204-a8333d8821d9.PNG)
+![7](https://user-images.githubusercontent.com/11277981/110936738-a7654480-8331-11eb-851d-c28f2f66afc1.PNG)
+![8](https://user-images.githubusercontent.com/11277981/110936739-a7654480-8331-11eb-9399-ebc45bd788bb.PNG)
+
+
 My UE4 game project submission for the 2021 Search For A Star Competition.
 
 **Game Overview:**
@@ -36,5 +45,5 @@ Use Spacebar key to distract the Caliriptus (Tip: to collect the back profile ph
 To change the phone camera location you can use the left and right keyboard inputs.
 
 The movement is different in this game since the phone camera is your main camera, so your directions are different from the character's directions (it's a nice neurological challenge for you when you play).
-
+  
 HAVE FUN!
